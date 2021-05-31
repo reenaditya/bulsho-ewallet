@@ -24,6 +24,7 @@ import {  userInfo } from '../../services/LoginService';
 import {  FCM } from '../../services/ProfileService';
 import styles from './HomeStyle'
 import messaging from '@react-native-firebase/messaging';
+import Theme from '../../constant/Theme';
 
 const HomeScreen = (props) => {
 
@@ -124,15 +125,17 @@ const HomeScreen = (props) => {
 
                 
                 </TouchableOpacity>
-                {/*<TouchableOpacity>
-                <FontIcon name='bell' size={15} color='#ffff' style={{margin:10}}/>
+                <TouchableOpacity onPress={() => props.navigation.navigate('QrCodeScreen',{
+                    mobile_number: state.mobile_number
+                })}>
+                <FontIcon name='qrcode' size={15} color='#ffff' style={{margin:10}}/>
                
-                </TouchableOpacity>*/}
+                </TouchableOpacity>
                 
               </View>
           </View>
           <View style={styles.walletArea}>
-            <Text style={styles.walletAmount}>₹ {
+            <Text style={styles.walletAmount}> {Theme.currency} {
                 state && 
                 state.wallet && 
                 state.wallet.wallet ?state.wallet.wallet.toFixed(2) : 0.00}</Text>
@@ -146,7 +149,7 @@ const HomeScreen = (props) => {
                 <FontIcon name='arrow-up' size={20} color='#2edac5' style={styles.transactionIconStyle}/>
                 <View>
                   <Text style={styles.transactionText}>Income </Text>
-                  <Text style={styles.transactionText2}> ₹ { 
+                  <Text style={styles.transactionText2}> {Theme.currency} { 
                     state &&
                     state.income.length &&
                     state.income.[0] &&
@@ -158,7 +161,7 @@ const HomeScreen = (props) => {
                 <FontIcon name='arrow-down' size={20} color='#a17dff' style={styles.outcomeIcon}/>
                 <View>
                   <Text style={styles.outcomeText}>Outcome </Text>
-                  <Text style={styles.outcomeValue}> ₹ { 
+                  <Text style={styles.outcomeValue}> {Theme.currency} { 
                     state &&
                     state.outcome.length &&
                     state.outcome.[0] &&
@@ -193,7 +196,7 @@ const HomeScreen = (props) => {
                 </TouchableOpacity>
               </View>
               <View style={styles.item}>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => props.navigation.navigate('QrCodeScannerScreen')}>
                   <ImageBackground source={Icon.qrcode} style={styles.imageIcon}/>
                   <Text style={styles.iconText}>QR Pay</Text>
                 </TouchableOpacity>

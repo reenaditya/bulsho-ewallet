@@ -16,9 +16,11 @@ import { Badge } from 'react-native-elements';
 const PaymentRequestScreen = ({navigation}) => { 
 
     const Width = Dimensions.get('window').width;
+    const Height = Dimensions.get('window').height;
     const [data,setData] = useState([]);
     const [status,setStatus] = useState();
     
+
     useEffect(async () => {
 
         const token = await AsyncStorage.getItem('token');
@@ -28,7 +30,6 @@ const PaymentRequestScreen = ({navigation}) => {
         }
         await DepositRequestList({},headers)
         .then(res => {
-            console.log(res.data.data)
             setData(res.data.data)
         }).catch(err =>{
 
@@ -80,7 +81,6 @@ const PaymentRequestScreen = ({navigation}) => {
         
         const token = await AsyncStorage.getItem('token');
         const user = JSON.parse(await AsyncStorage.getItem('user_info'));
-        
         if (item.status != 2 && user.is_vendor) {
 
             let headers = {
@@ -89,7 +89,7 @@ const PaymentRequestScreen = ({navigation}) => {
             }
             Alert.alert(
                 "Recharge amount",
-                `K ${item.deposit_amount.toFixed(2)}`,
+                `${Theme.currency} ${item.deposit_amount.toFixed(2)}`,
                 [{ 
                     text: "Close", 
                     style: "cancel" 
@@ -107,19 +107,42 @@ const PaymentRequestScreen = ({navigation}) => {
                         },headers).then(res => {
                             navigation.navigate('OTPScreen',{phone_number: item.user.mobile_number})
                         }).catch(err => {
-                            //console.log(JSON.stringify(err.response))
+                            Alert.alert(err.response.data.message,`${Theme.currency} ${item.deposit_amount.toFixed(2)}`)
                         })
                     },
                     style: "default"
                 },]
             );
         }
-    }  
+    } 
   
     return (  
         <View style={styles.container}>  
             <FlatList  
                 data={data}  
+                keyExtractor={item => item.id}
+                
+                ListEmptyComponent={() => {
+                     
+                     //const user = JSON.parse(AsyncStorage.getItem('user_info'));
+
+                    return (<View style={{
+                        height: Height,
+                        width: Width ,
+                        borderRadius:5,
+                        justifyContent:'center',
+                        alignItems: "center",
+                        backgroundColor:Theme.themeColor,
+                    }}>
+                    
+                    <Text> 
+                    
+                        You have not any request
+                    </Text>
+
+                    
+                    </View>)
+                }}
                 renderItem={({item}) =>
                     <TouchableOpacity onPress={getListViewItem.bind(this,item)}>  
                     <View style={{
@@ -131,7 +154,7 @@ const PaymentRequestScreen = ({navigation}) => {
                     
                     <Text style={{paddingLeft:10,paddingTop:10}} >User Name : {item.user.name}</Text>
                     <Text style={{paddingLeft:10}}>Mobile Number : {item.user.mobile_number}</Text>
-                    <Text style={{paddingLeft:10}}>Requested Amount :  K {item.deposit_amount.toFixed(2)}</Text>
+                    <Text style={{paddingLeft:10}}>Requested Amount :  {Theme.currency} {item.deposit_amount.toFixed(2)}</Text>
                     
                     <View style={{marginLeft:"80%"}}>
                         <Badge 

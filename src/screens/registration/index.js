@@ -61,7 +61,7 @@ export default function Registration({navigation}){
   			.catch(err => {
   				errorMessage.email = err.response.data.message;
 				setError(errorMessage)
-  			    console.log(err.response.data)
+  			    //console.log(JSON.stringify(err.response.data))
   			})
 
 

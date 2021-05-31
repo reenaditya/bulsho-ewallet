@@ -9,22 +9,24 @@ import {
     Button,
     TouchableOpacity,
     ScrollView,
-    Alert
+    Alert,
+    ActivityIndicator
 } from "react-native";
 import AsyncStorage from '@react-native-community/async-storage';
 import styles from './Style';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Input } from 'react-native-elements';
 import { DepositRequest } from '../../services/DepositService';
+import Theme from '../../constant/Theme'
 
 const errInit = {
     mobile_numberError:'',
     amountError:''
 };
 
-const PaymentScreen = ({navigationm,route}) => {
+const PaymentScreen = ({navigation,route}) => {
 
-
+    const [animating,setAnimating] = useState(false);
     const [state,setState] = useState({
         mobile_number: route.params.mobile_number,
         amount:''
@@ -38,6 +40,7 @@ const PaymentScreen = ({navigationm,route}) => {
 
     const sendRequest = async () => {
 
+        setAnimating(true);
         const token = await AsyncStorage.getItem('token');
 
         let headers = {
@@ -45,7 +48,7 @@ const PaymentScreen = ({navigationm,route}) => {
             'Authorization': `Bearer ${token}`
         }
 
-        DepositRequest({
+       await DepositRequest({
             mobile_number: state.mobile_number,
             amount: state.amount
         },headers)
@@ -56,13 +59,7 @@ const PaymentScreen = ({navigationm,route}) => {
                 "Request Sended",[{
                     text: "Back to home",
                     onPress: () => navigation.navigate('HomeScreen')
-                },
-                {
-                    text: "Cancel",
-                    onPress: () => setState({mobile_number:'',amount:''}),
-                    style: "cancel"
-                },
-                ]
+                }]
             );
 
         }).catch(err => {
@@ -80,6 +77,7 @@ const PaymentScreen = ({navigationm,route}) => {
                 ]
             );
         })
+        setAnimating(false);
     }
     
 
@@ -137,9 +135,16 @@ const PaymentScreen = ({navigationm,route}) => {
                      
                 </View>
                 
+                
+                {animating?(
+            
+                    <ActivityIndicator  color={Theme.text2Color} style={styles.loginBtn}/>
+            
+                ):(
                 <TouchableOpacity style={styles.loginBtn} onPress={() => sendRequest()}>
                     <Text style={styles.loginText} >Request</Text>
                 </TouchableOpacity>
+                )}
             </View>
             <View style={styles.footer}>
                 

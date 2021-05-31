@@ -50,13 +50,13 @@ export default function Login({navigation}) {
         setErrorEmail("");
         setErrorPassword("");
     }
-    const handleSubmitPress = () => {
+    const handleSubmitPress = async () => {
 
         setAnimating(true);
 
         if (email && password) {
 
-            loginApi({email,password})
+            await loginApi({email,password})
             .then(async res => {
                 clearAndDismissKeyboard()
 
@@ -153,9 +153,9 @@ export default function Login({navigation}) {
         <TouchableOpacity onPress={() => navigation.navigate('ForgotPasswordScreen')}>
             <Text style={styles.forgot_button}>Forgot Password?</Text>
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('RegisterScreen')}>
 
-            <Text style={styles.signUpButton} onPress={() => navigation.navigate('RegisterScreen')}>Don't Have an Account?   
+            <Text style={styles.signUpButton} >Don't Have an Account?   
                 <Text style={{color: Theme.linkColor}} > Sign Up</Text>
             </Text>
         </TouchableOpacity>

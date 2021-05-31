@@ -3,12 +3,15 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import HomeScreen from './home/HomeScreen';
 import TransferScreen from './transfer/TransferScreen';
+import TransferToAdminScreen from './transfer/TransferToAdminScreen';
 import PaymentScreen from './payment/PaymentScreen';
 import Transaction from './transaction';
 import VendorListScreen from './payment/VendorListScreen';
 import Profile from './Profile';
 import PaymentRequestScreen from './paymentRequest/PaymentRequestScreen';
 import OTPScreen from './paymentRequest/OTPScreen';
+import QrCodeScreen from './qrcode/QrCodeScreen';
+import QrCodeScannerScreen from './qrcode/QrCodeScannerScreen';
 import Theme from '../constant/Theme'
 import { Dimensions } from 'react-native';
 
@@ -23,13 +26,26 @@ const homeScreenStack = ({navigation}) => {
         <Stack.Screen
             name="HomeScreen"
             component={HomeScreen}
-            options={{headerShown: false}}
+            options={{headerShown: false,enabled: false}}
         />
+
         <Stack.Screen
             name="TransferScreen"
             component={TransferScreen}
             options={{
                 title: 'Transfer',
+                headerStyle:{
+                    backgroundColor:Theme.themeColor2
+                },
+                headerTintColor: Theme.text2Color,
+                
+            }}
+        />
+        <Stack.Screen
+            name="TransferToAdminScreen"
+            component={TransferToAdminScreen}
+            options={{
+                title: 'Transfer To Admin',
                 headerStyle:{
                     backgroundColor:Theme.themeColor2
                 },
@@ -109,36 +125,33 @@ const homeScreenStack = ({navigation}) => {
                 
             }}
         />
+        <Stack.Screen
+            name="QrCodeScreen"
+            component={QrCodeScreen}
+            options={{
+                title: 'Qr Code',
+                headerStyle:{
+                    backgroundColor:Theme.themeColor2
+                },
+                headerTintColor: Theme.text2Color,
+                
+            }}
+        />
+        <Stack.Screen
+            name="QrCodeScannerScreen"
+            component={QrCodeScannerScreen}
+            options={{
+                title: 'Scan & Pay',
+                headerStyle:{
+                    backgroundColor:Theme.themeColor2
+                },
+                headerTintColor: Theme.text2Color,
+                
+            }}
+        />
     </Stack.Navigator>
   );
 };
-
-/*const settingScreenStack = ({navigation}) => {
-  return (
-    <Stack.Navigator
-      initialRouteName="SettingsScreen"
-      screenOptions={{
-        headerLeft: () => (
-          <NavigationDrawerHeader navigationProps={navigation} />
-        ),
-        headerStyle: {
-          backgroundColor: '#307ecc', //Set Header color
-        },
-        headerTintColor: '#fff', //Set Header text color
-        headerTitleStyle: {
-          fontWeight: 'bold', //Set Header text style
-        },
-      }}>
-      <Stack.Screen
-        name="SettingsScreen"
-        component={SettingsScreen}
-        options={{
-          title: 'Settings', //Set Header Title
-        }}
-      />
-    </Stack.Navigator>
-  );
-};*/
 
 const DrawerNavigatorRoutes = (props) => {
   return (
@@ -147,12 +160,8 @@ const DrawerNavigatorRoutes = (props) => {
         name="homeScreenStack"
         options={{drawerLabel: 'Home Screen'}}
         component={homeScreenStack}
+
       />
-      {/*<Drawer.Screen
-        name="settingScreenStack"
-        options={{drawerLabel: 'Setting Screen'}}
-        component={settingScreenStack}
-      />*/}
     </Drawer.Navigator>
   );
 };

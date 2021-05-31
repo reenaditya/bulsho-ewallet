@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import {
   StyleSheet,
   SafeAreaView,
@@ -22,7 +22,7 @@ const errInit = {
 	amountError:''
 };
 
-export default function TransferScreen({navigation}){
+export default function TransferScreen({navigation,route}){
 
 	const [state,setState] = useState({
 		mobile_number:'',
@@ -30,7 +30,14 @@ export default function TransferScreen({navigation}){
 	});
     
 	const [errState,setErrState] = useState(errInit);
+	const [userInfo,setUserInfo] = useState({});
 
+	useEffect(async () => {
+		setUserInfo(JSON.parse(await AsyncStorage.getItem('user_info')));
+		if (route && route.params && route.params.mobile_number) {
+			setState({...state,mobile_number:route.params.mobile_number})
+		}
+	},[]);
 	const clear = () => {
 		setErrState(errInit)
 	}
@@ -141,10 +148,21 @@ export default function TransferScreen({navigation}){
 				    />  
 			         
 			    </View>
-			    
-			    <TouchableOpacity style={styles.loginBtn} onPress={() => transferProceed()}>
-        			<Text style={styles.loginText} >Send</Text>
-      			</TouchableOpacity>
+			    {userInfo.is_vendor?(
+			    <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+				    <TouchableOpacity style={[styles.loginBtn,{marginRight:10,width:'30%'}]} onPress={() => transferProceed()}>
+	        			<Text style={styles.loginText} >Send</Text>
+	      			</TouchableOpacity>
+	      			<TouchableOpacity style={[styles.loginBtn,{width:'30%'}]} onPress={() => navigation.navigate('TransferToAdminScreen')}>
+	        			<Text style={styles.loginText} >Send to admin</Text>
+	      			</TouchableOpacity>
+			    	
+			    </View>
+			    ):(
+			    	<TouchableOpacity style={styles.loginBtn} onPress={() => transferProceed()}>
+	        			<Text style={styles.loginText} >Send</Text>
+	      			</TouchableOpacity>
+			    )}
 			</View>
 		 	<View style={styles.footer}>
 		 		

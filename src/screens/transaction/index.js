@@ -134,7 +134,7 @@ const PaymentRequestScreen = ({navigation}) => {
                         Mobile Number : {userData.id === item.sender.id ? item.receiver.mobile_number : item.sender.mobile_number }
                     </Text>
                     <Text style={{paddingLeft:10}}>
-                        {userData.id === item.sender.id ? 'Outcome':'Income' } Amount :  K {item.transaction_amount.toFixed(2)}
+                        {userData.id === item.sender.id ? 'Outcome':'Income' } Amount :  {Theme.currency} {item.transaction_amount.toFixed(2)}
                     </Text>
                  
                     </View>

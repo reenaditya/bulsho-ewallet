@@ -28,7 +28,7 @@ export default function MobileNumber ({navigation}){
 		setAnimating(true);
 		setError('');
 
-		if (mobileNumber) {
+		if (mobileNumber && mobileNumber.length == 10) {
 			
 			await mobileNumberExists({mobile_number:mobileNumber}).then(async res => {
 				
@@ -39,20 +39,26 @@ export default function MobileNumber ({navigation}){
 					navigation.navigate('OTP');
 
 				}).catch(err => {
+					console.log(JSON.stringify(err.response.data))
 					setError('something went wrong!');
 				})
 				
 
 			}).catch(err => {
 				
+				console.log(JSON.stringify(err.response.data))
 				setError(err.response.data.message);
 
 			})
 			
-
 		}else{
 
-			setError('Phone Number is required field')
+			if (mobileNumber) {
+				setError('Phone number must be contain 10 digits');
+			}else{
+				setError('Phone Number is required field');	
+			}
+			
 		}
 		setAnimating(false);
 	}
@@ -70,6 +76,7 @@ export default function MobileNumber ({navigation}){
 				    style={styles.TextInput}
 				    onChangeText={value => setMobileNumber(value)}
 				    keyboardType = "number-pad"
+				    maxLength = {10}
 				    leftIcon={
 				        <Icon
 				          name='phone'
@@ -87,7 +94,7 @@ export default function MobileNumber ({navigation}){
             		<ActivityIndicator  color={Theme.text2Color} style={styles.loginBtn}/>
             
             	):(
-            	<TouchableOpacity style={styles.loginBtn}  onPress={nextScreen.bind(this)}>
+            	<TouchableOpacity style={styles.loginBtn}  onPress={nextScreen.bind(this)} >
                 	<Text style={styles.loginText}>Continue</Text>
             	</TouchableOpacity>
         		)}

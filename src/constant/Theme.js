@@ -8,4 +8,5 @@ export default {
 	textColor: '#000000',
 	text2Color: '#FFFFFF',
 	iconColor: '#581449',
+	currency: '$'
 }

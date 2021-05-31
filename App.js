@@ -108,21 +108,17 @@ const App = () => {
 
     const getToken = async () => {
         const token = await messaging().getToken();
-        console.log("token => ",token);
+        
     }
     useEffect(() => {
         getToken()
-        messaging().onMessage(async remoteMessage => {
-            console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
+        const unsubscribe = messaging().onMessage(async remoteMessage => {
+            Alert.alert(remoteMessage.notification.title,remoteMessage.notification.body );
         });
 
-        ///return unsubscribe;
 
         messaging().onNotificationOpenedApp(remoteMessage => {
-            console.log(
-                'Notification caused app to open from background state:',
-                JSON.stringify(remoteMessage),
-            );
+           
         });
 
     // Check whether an initial notification is available
@@ -130,10 +126,7 @@ const App = () => {
         .getInitialNotification()
         .then(remoteMessage => {
             if (remoteMessage) {
-            console.log(
-                'Notification caused app to open from quit state:',
-                JSON.stringify(remoteMessage),
-            );
+            
            
             }
         
