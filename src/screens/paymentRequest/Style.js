@@ -46,7 +46,7 @@ const OTPStyle = {
     },
     container: {
         backgroundColor: Theme.themeColor2,
-        paddingTop:100,
+        paddingTop:150,
         width: '100%',
         justifyContent: "center",
         alignItems: "center",

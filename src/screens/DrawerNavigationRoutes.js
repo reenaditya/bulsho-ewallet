@@ -15,7 +15,6 @@ import QrCodeScannerScreen from './qrcode/QrCodeScannerScreen';
 import Theme from '../constant/Theme'
 import { Dimensions } from 'react-native';
 
-
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 const Width = Dimensions.get('window').width;
@@ -81,11 +80,7 @@ const homeScreenStack = ({navigation}) => {
             name="OTPScreen"
             component={OTPScreen}
             options={{
-                title: 'OTP',
-                headerStyle:{
-                    backgroundColor:Theme.themeColor2
-                },
-                headerTintColor: Theme.text2Color,
+                headerShown: false
                 
             }}
         />
@@ -156,14 +151,14 @@ const homeScreenStack = ({navigation}) => {
 const DrawerNavigatorRoutes = (props) => {
   return (
     <Drawer.Navigator>
-      <Drawer.Screen
-        name="homeScreenStack"
-        options={{drawerLabel: 'Home Screen'}}
-        component={homeScreenStack}
-
-      />
+        <Drawer.Screen
+            name="homeScreenStack"
+            options={{drawerLabel: 'Home'}}
+            component={homeScreenStack}
+        />
+        
     </Drawer.Navigator>
   );
 };
 
-export default DrawerNavigatorRoutes;
+export default homeScreenStack;

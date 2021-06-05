@@ -68,7 +68,7 @@ export default function Login({navigation}) {
                     'Authorization': `Bearer ${res.data.token}`
                 }
                 
-                userInfo(headers).then(async res => {
+                await userInfo(headers).then(async res => {
 
                     await AsyncStorage.setItem('user_info', JSON.stringify(res.data[0]));
 

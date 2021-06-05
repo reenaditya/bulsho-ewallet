@@ -7,17 +7,35 @@ import {
     TextInput
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const QrCodeScreen = ({route}) => {
 
+    const [spining,setSpining] = useState(true);
+
+    useEffect(async () => {
+
+        setInterval(() => {
+          setSpining(false);
+        }, 1000);
+
+    },[])
+
 	return (
       <View style={styles.container}>
-       
-        <QRCode
-          value={route.params.mobile_number}
-          size={200}
-          bgColor='black'
-          fgColor='white'/>
+        {spining?(
+                <Spinner
+                  visible={spining}
+                  textContent={'Loading...'}
+                  textStyle={{color: '#FFF'}}
+                />
+            ):(
+                <QRCode
+                  value={route.params.mobile_number}
+                  size={200}
+                  bgColor='black'
+                  fgColor='white'/>
+            )}       
       </View>
     );
 }

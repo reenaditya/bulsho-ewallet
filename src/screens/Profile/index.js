@@ -19,6 +19,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { emailExists } from '../../services/RegisterService';
 import * as ProfileService from '../../services/ProfileService';
 import Theme from '../../constant/Theme'
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default function ProfileScreen({navigation}){
 
@@ -28,8 +29,14 @@ export default function ProfileScreen({navigation}){
 		name:''
 	});
 	const [userData,setUserData] = useState({name:'',email:''});
+	const [spining,setSpining] = useState(true);
 	
   	useEffect(async () => {
+  		
+  		setInterval(() => {
+          setSpining(false);
+        }, 2000);
+
 		setUserData(JSON.parse(await AsyncStorage.getItem('user_info')));
   	},[])
   	
@@ -113,71 +120,81 @@ export default function ProfileScreen({navigation}){
 	
 	return (
 		<View style={styles.container}>
-		<SafeAreaView style={{flex:1}}> 
-		<ScrollView>
-		 	<View style={[styles.heading,{
-		 			alignItems:'center',
-		 			height:10
-		 		}]}>
-		 	</View>
-		 	<View style={styles.subHeading}>
-		 		<Text style={styles.subHeadingText}> Update Your Profile </Text>
-				
-				<View style={[styles.inputView,error.name?{marginBottom:60}:{}]}>
-				    <Input
-				    label="Your Name"
-				    placeholder="Enter Your Name"
-				    labelStyle={{fontSize:12}}
-				    errorMessage={error.name}
-				    style={styles.TextInput}
-				    onChangeText={value => setUserData({...userData,name: value})}
-				    value={userData.name}
-				    leftIcon={
-				        <Icon
-				          name='user'
-				          size={16}
-				          color='black'
-				        />
-				    }
-				    />      
-      			</View>
+		{spining?(
+            <Spinner
+                visible={spining}
+                textContent={'Loading...'}
+                textStyle={{color: '#FFF'}}
+            />
+            ):(
+            <SafeAreaView style={{flex:1}}> 
+				<ScrollView>
+			 	<View style={[styles.heading,{
+			 			alignItems:'center',
+			 			height:10
+			 		}]}>
+			 	</View>
+			 	<View style={styles.subHeading}>
+			 		<Text style={styles.subHeadingText}> Update Your Profile </Text>
+					
+					<View style={[styles.inputView,error.name?{marginBottom:60}:{}]}>
+					    <Input
+					    label="Your Name"
+					    placeholder="Enter Your Name"
+					    labelStyle={{fontSize:12}}
+					    errorMessage={error.name}
+					    style={styles.TextInput}
+					    onChangeText={value => setUserData({...userData,name: value})}
+					    value={userData.name}
+					    leftIcon={
+					        <Icon
+					          name='user'
+					          size={16}
+					          color='black'
+					        />
+					    }
+					    />      
+	      			</View>
 
-		 		<View style={[styles.inputView,error.email?{marginBottom:60}:{}]}>
-				    <Input
-				    label="Your Email"
-				    placeholder="Enter Your Email"
-				    labelStyle={{fontSize:12}}
-				    errorMessage={error.email}
-				    style={styles.TextInput}
-				    value={userData.email}
-				    onChangeText={value => setUserData({...userData,email: value})}
-				    leftIcon={
-				        <Icon
-				          name='envelope'
-				          size={16}
-				          color='black'
-				        />
-				    }
-				    />      
-      			</View>
-      		    
-			    
-			    {animating?(
-            
-            		<ActivityIndicator  color={Theme.text2Color} style={styles.loginBtn}/>
-            
-            	):(
-            	<TouchableOpacity style={styles.loginBtn}  onPress={nextScreen.bind(this)}>
-                	<Text style={styles.loginText}>Update</Text>
-            	</TouchableOpacity>
-        		)}
-			    
-			</View>
-		 	<View style={styles.footer}>
-		 		
-		 	</View>
-		 	</ScrollView>
+			 		<View style={[styles.inputView,error.email?{marginBottom:60}:{}]}>
+					    <Input
+					    label="Your Email"
+					    placeholder="Enter Your Email"
+					    labelStyle={{fontSize:12}}
+					    errorMessage={error.email}
+					    style={styles.TextInput}
+					    value={userData.email}
+					    onChangeText={value => setUserData({...userData,email: value})}
+					    leftIcon={
+					        <Icon
+					          name='envelope'
+					          size={16}
+					          color='black'
+					        />
+					    }
+					    />      
+	      			</View>
+	      		    
+				    
+				    {animating?(
+	            
+	            		<ActivityIndicator  color={Theme.text2Color} style={styles.loginBtn}/>
+	            
+	            	):(
+	            	<TouchableOpacity style={styles.loginBtn}  onPress={nextScreen.bind(this)}>
+	                	<Text style={styles.loginText}>Update</Text>
+	            	</TouchableOpacity>
+	        		)}
+				    
+				</View>
+			 	<View style={styles.footer}>
+			 		
+			 	</View>
+			 	</ScrollView>
 		 	</SafeAreaView>
+            )
+        }
+		
 		</View>
 	);
 }

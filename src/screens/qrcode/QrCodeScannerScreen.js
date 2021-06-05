@@ -4,13 +4,25 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  Linking
+  Linking,
+  View
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import { RNCamera } from 'react-native-camera';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const QrCodeScannerScreen = ({navigation}) => {
+
+    const [spining,setSpining] = useState(true);
+
+        useEffect(async () => {
+
+            setInterval(() => {
+              setSpining(false);
+            }, 2000);
+
+        },[])
 
     const onSuccess = e => {
         
@@ -19,11 +31,15 @@ const QrCodeScannerScreen = ({navigation}) => {
         });
     };
 	return (
-      <QRCodeScanner
-        onRead={onSuccess.bind(this)}
-        checkAndroid6Permissions={true}
-        flashMode={RNCamera.Constants.FlashMode.auto}
-      />
+        <View style={{flex:1}}>
+            <QRCodeScanner
+                onRead={onSuccess.bind(this)}
+                checkAndroid6Permissions={true}
+                reactivate={true}
+                reactivateTimeout={2000}
+                flashMode={RNCamera.Constants.FlashMode.auto}
+            />
+        </View>
     );
 }
 const styles = StyleSheet.create({

@@ -9,7 +9,8 @@ import {
   Button,
   ScrollView,
   TouchableOpacity,
-  ActivityIndicator
+  ActivityIndicator,
+  Alert
 } from "react-native";
 import styles from './OTPStyle';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -36,13 +37,6 @@ export default function SignUpSubmit ({navigation}){
         const password = await AsyncStorage.getItem('password');
         const mobileNumber = await AsyncStorage.getItem('mobileNumber');
 		
-		console.log({
-			email:email,
-			password:password,
-			mobile_number: mobileNumber,
-			is_vendor: isChecked ? 1 : 0
-		});
-		
 		await registerApi({
 			email:email,
 			password:password,
@@ -50,20 +44,34 @@ export default function SignUpSubmit ({navigation}){
 			is_vendor: isChecked ? 1 : 0
 		}).then(async res => {
 
-			await AsyncStorage.setItem('token', res.data.token);
-        	let headers = {
-            	'Content-Type': 'application/json',
-            	'Authorization': `Bearer ${res.data.token}`
-        	}
-        	
-        	userInfo(headers).then(async res => {
+			if (isChecked) {
+				
+				Alert.alert(
+	                "Success",
+	                "Registration successfull waiting for admin approval",[{
+	                    text: "OK",
+	                    onPress: () => navigation.navigate('LoginScreen')
+	                }]
+            	);
 
-            	await AsyncStorage.setItem('user_info', JSON.stringify(res.data[0]));
-            	navigation.replace('DrawerNavigationRoutes');
-                	
-        	}).catch(err => {
-            	
-        	})
+			}else{
+
+				await AsyncStorage.setItem('token', res.data.token);
+	        	let headers = {
+	            	'Content-Type': 'application/json',
+	            	'Authorization': `Bearer ${res.data.token}`
+	        	}
+	        	
+	        	await userInfo(headers).then(async res => {
+
+	            	await AsyncStorage.setItem('user_info', JSON.stringify(res.data[0]));
+	            	navigation.replace('DrawerNavigationRoutes');
+	                	
+	        	}).catch(err => {
+	            	
+	        	})
+
+			}
 		}).catch(err => {
             	
         })

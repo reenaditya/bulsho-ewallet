@@ -29,7 +29,7 @@ import Theme from '../../constant/Theme';
 const HomeScreen = (props) => {
 
     const [state,setState] = useState();
-    const [refreshing, setRefreshing] = React.useState(false);
+    const [refreshing, setRefreshing] = useState(false);
 
     const windowHeight = Dimensions.get('window').height;
 
@@ -112,7 +112,7 @@ const HomeScreen = (props) => {
       <View style={styles.headerSection}>
           <View style={styles.header}> 
               <View style={styles.subHeader}>
-              {/*  <ImageBackground source={Icon.profile} style={styles.profileImage} imageStyle={{ borderRadius: 20}}/>*/}
+                <ImageBackground source={Icon.profile} style={styles.profileImage} imageStyle={{ borderRadius: 20}}/>
                 <View>
                   <Text style={styles.greeting}>Welcome Back </Text>
                   <Text style={styles.userText}>{state?state.name:'Guest'}</Text>
