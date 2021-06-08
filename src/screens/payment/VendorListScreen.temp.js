@@ -6,7 +6,6 @@ import {
     Text,
     View,
     TouchableOpacity,
-    ImageBackground,
     Alert } from 'react-native';  
 import Theme from '../../constant/Theme'
 import OTPInputView from 'react-native-otp-input'
@@ -15,7 +14,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { Badge,Input } from 'react-native-elements';
 import Spinner from 'react-native-loading-spinner-overlay';
 import filter from 'lodash.filter'
-import Icon from '../../components/Icon';
   
 const PaymentRequestScreen = ({navigation}) => { 
 
@@ -131,38 +129,6 @@ const PaymentRequestScreen = ({navigation}) => {
             />
           </View>
     )
-    const renderView = (item) => {
-
-        let profile = "";
-        if (item.avatar) {
-            profile = {uri: item.avatar}
-        }else{
-            profile = Icon.profile
-        }
-        return (
-            <TouchableOpacity onPress={() => nextScreen(item)}>  
-            <View style={styles.main}>
-                <View style={styles.section}>
-                    <View style={styles.firstPart} >
-                        <ImageBackground 
-                        source={profile} 
-                        style={styles.profileImage} 
-                        imageStyle={{ borderRadius: 20}}/>
-                        <View style={{flex:1}} >
-                            <Text style={{marginLeft:15,fontWeight:'bold',fontSize:15,lineHeight: 40}} >
-                               { item.name }
-                            </Text>
-                            {/*<Text style={{marginLeft:15,color:'#696969'}} >
-                                { userData.id === item.sender.id ? item.receiver.name : item.sender.name }
-                            </Text>*/}
-                        </View>
-                       
-                    </View>
-                </View>
-            </View>
-            </TouchableOpacity>
-        );
-    }
    
     return (  
         <View style={styles.container}>  
@@ -202,7 +168,27 @@ const PaymentRequestScreen = ({navigation}) => {
             <FlatList  
                 data={data}  
                 keyExtractor={item => item.id}
-                renderItem={({item}) => renderView(item) }  
+               // ListHeaderComponent={data.length?renderHeader:null}
+                renderItem={({item}) =>
+                    <TouchableOpacity onPress={() => nextScreen(item)}>  
+                    <View style={{
+                        height:80,
+                        width: Width ,
+                        borderRadius:5,
+                        backgroundColor:Theme.themeColor,
+                    }}>
+                    
+                    <Text style={{paddingLeft:10,paddingTop:10}} >
+                        Agent Name : { item.name }
+                    </Text>
+                    <Text style={{paddingLeft:10}}>
+                        Mobile Number : {item.mobile_number }
+                    </Text>
+                 
+                    </View>
+                    </TouchableOpacity>
+                }  
+                ItemSeparatorComponent={renderSeparator}  
                 /> 
             </View>)}
             
@@ -212,39 +198,17 @@ const PaymentRequestScreen = ({navigation}) => {
       
 }  
   
-
 const styles = StyleSheet.create({  
     container: {  
         flex: 1, 
+        alignItems: "center",
+        width:'100%',
         backgroundColor: Theme.themeColor2
     },  
     item: {  
         padding: 10,
         fontSize: 18,  
     },  
-    profileImage:{
-        width:40,
-        height:40,
-        //marginRight:15
-    },
-    main:{
-        height:80,
-        //marginVertical: 5,
-        //marginHorizontal:8,
-        //borderRadius:15,
-        backgroundColor:Theme.themeColor,
-    },
-    section:{
-        flex: 1,
-        flexDirection:'row',
-        marginBottom:35,
-        marginTop:15
-    },
-    firstPart:{
-        flex:1 ,
-        flexDirection:'row',
-        marginLeft:15
-    }
 })  
   
   

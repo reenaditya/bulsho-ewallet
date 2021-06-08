@@ -91,22 +91,19 @@ const PaymentRequestScreen = ({navigation}) => {
     }  
     const renderView = (item) => {
 
-        let sender = item.sender;
-        let receiver = item.receiver;
-        let senderAvatar = sender.avatar;
-        let receiverAvatar = receiver.avatar;
-      
-        if (userData.id == item.sender_id) {
-            console.log(senderAvatar)
+        const logo = userData.id === item.sender.id ? item.receiver.avatar : item.sender.avatar;
+        let profile = "";
+        if (logo) {
+            profile = {uri: logo}
         }else{
-            console.log(receiverAvatar)
+            profile = Icon.profile
         }
         return (
             <View style={styles.main}>
                 <View style={styles.section}>
                     <View style={styles.firstPart} >
                         <ImageBackground 
-                        source={{uri: userData.id === item.sender.id ? item.receiver.avatar : item.sender.avatar}} 
+                        source={profile} 
                         style={styles.profileImage} 
                         imageStyle={{ borderRadius: 20}}/>
                         <View style={{flex:1}} >

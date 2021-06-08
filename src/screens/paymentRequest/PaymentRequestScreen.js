@@ -6,6 +6,7 @@ import {
     Text,
     View,
     TouchableOpacity,
+    ImageBackground,
     Alert } from 'react-native';  
 import Theme from '../../constant/Theme'
 import OTPInputView from 'react-native-otp-input'
@@ -13,6 +14,8 @@ import { DepositRequestList,DepositRequestReply } from '../../services/DepositSe
 import AsyncStorage from '@react-native-community/async-storage';
 import { Badge } from 'react-native-elements';
 import Spinner from 'react-native-loading-spinner-overlay';
+import Icon from '../../components/Icon';
+import moment from 'moment';
   
 const PaymentRequestScreen = ({navigation}) => { 
 
@@ -21,10 +24,12 @@ const PaymentRequestScreen = ({navigation}) => {
     const [data,setData] = useState([]);
     const [status,setStatus] = useState();
     const [spining,setSpining] = useState(true);
+    const [userData,setUserData] = useState('');
     
 
     useEffect(async () => {
 
+        setUserData(JSON.parse(await AsyncStorage.getItem('user_info')));
         setInterval(() => {
           setSpining(false);
         }, 2000);
@@ -124,6 +129,107 @@ const PaymentRequestScreen = ({navigation}) => {
             );
         }
     } 
+    const renderVendor = (item) => {
+    
+        const logo = userData.is_vendor? item.user.avatar : item.vendor.avatar;
+        
+        let profile = "";
+        if (logo) {
+            profile = {uri: logo}
+        }else{
+            profile = Icon.profile
+        }
+
+        return (
+
+            <TouchableOpacity onPress={getListViewItem.bind(this,item)}>  
+            <View style={styles.main} >
+                <View style={styles.section}>
+                    <View style={styles.firstPart} >
+                     
+                        <ImageBackground 
+                        source={profile} 
+                        style={styles.profileImage} 
+                        imageStyle={{ borderRadius: 20}}/>
+
+                        <View style={{flex:1}} >
+                            <Text style={{marginLeft:15,fontWeight:'bold',fontSize:15}} >
+                                { userData.is_vendor?item.user.name:item.vendor.name}
+                            </Text>
+                            <Text style={{marginLeft:15,color:'#696969'}} >
+                                <Badge 
+                            value={<Text style={{color:'white',margin:5}}>{getStatus(item.status).text}</Text>} 
+                            badgeStyle={{height:30,backgroundColor: 'purple'}}
+                            />
+                            </Text>
+                        </View>
+                        <View style={{textAlign:'right',marginRight:15}} >
+                            <Text>{Theme.currency} {item.deposit_amount.toFixed(2)}</Text>
+                        </View>
+                    </View>
+                </View>
+                <View style={{flex: 1,flexDirection:'row',marginLeft:18}}>
+                    <View style={{flex: 3}}>
+                        <Text style={{color:'grey',fontSize:12}}>{moment(item.created_at).format("DD MMM YYYY")}</Text>
+                    </View>
+                    <View style={{flex: 2}}>
+                       
+                       
+                    </View>
+                 </View>
+            </View>
+            </TouchableOpacity>  
+        );
+    }
+    const renderUser = (item) => {
+    
+        const logo = userData.is_vendor? item.user.avatar : item.vendor.avatar;
+        
+        let profile = "";
+        if (logo) {
+            profile = {uri: logo}
+        }else{
+            profile = Icon.profile
+        }
+
+        return (
+            <View style={styles.main} >
+                <View style={styles.section}>
+                    <View style={styles.firstPart} >
+                     
+                        <ImageBackground 
+                        source={profile} 
+                        style={styles.profileImage} 
+                        imageStyle={{ borderRadius: 20}}/>
+
+                        <View style={{flex:1}} >
+                            <Text style={{marginLeft:15,fontWeight:'bold',fontSize:15}} >
+                                { userData.is_vendor?item.user.name:item.vendor.name}
+                            </Text>
+                            <Text style={{marginLeft:15,color:'#696969'}} >
+                                <Badge 
+                            value={<Text style={{color:'white',margin:5}}>{getStatus(item.status).text}</Text>} 
+                            badgeStyle={{height:30,backgroundColor: 'purple'}}
+                            />
+                            </Text>
+                        </View>
+                        <View style={{textAlign:'right',marginRight:15}} >
+                            <Text>{Theme.currency} {item.deposit_amount.toFixed(2)}</Text>
+                        </View>
+                    </View>
+                </View>
+                <View style={{flex: 1,flexDirection:'row',marginLeft:18}}>
+                    <View style={{flex: 3}}>
+                        <Text style={{color:'grey',fontSize:12}}>{moment(item.created_at).format("DD MMM YYYY")}</Text>
+                    </View>
+                    <View style={{flex: 2}}>
+                       
+                       
+                    </View>
+                 </View>
+            </View>
+        );
+    }
   
     return (  
         <View style={styles.container}>  
@@ -137,33 +243,8 @@ const PaymentRequestScreen = ({navigation}) => {
                 <FlatList  
                     data={data}  
                     keyExtractor={item => item.id}
-                 
-                    renderItem={({item}) =>
-                        <TouchableOpacity onPress={getListViewItem.bind(this,item)}>  
-                        <View style={{
-                            height:120,
-                            width: Width ,
-                            borderRadius:5,
-                            backgroundColor:Theme.themeColor,
-                        }}>
-                        
-                        <Text style={{paddingLeft:10,paddingTop:10}} >User Name : {item.user.name}</Text>
-                        <Text style={{paddingLeft:10}}>Mobile Number : {item.user.mobile_number}</Text>
-                        <Text style={{paddingLeft:10}}>Requested Amount :  {Theme.currency} {item.deposit_amount.toFixed(2)}</Text>
-                        <Text style={{paddingLeft:10}} >Date: { item.created_at}</Text>
-                        
-                        <View style={{marginLeft:"80%"}}>
-                            <Badge 
-                            value={<Text style={{color:'white',margin:5}}>{getStatus(item.status).text}</Text>} 
-                            badgeStyle={{height:30,backgroundColor: 'purple'}}
-                            />
-                        </View>
-
-                        
-                        </View>
-                        </TouchableOpacity>
-                    }  
-                    ItemSeparatorComponent={renderSeparator}  
+                    renderItem={({item}) => userData.is_vendor?renderVendor(item):renderUser(item)}    
+                    
                     />  
             ):(
                 <View style={{height: Height,width: Width ,borderRadius:5,justifyContent:'center',alignItems: "center",backgroundColor:Theme.themeColor,}}>
@@ -178,14 +259,37 @@ const PaymentRequestScreen = ({navigation}) => {
 const styles = StyleSheet.create({  
     container: {  
         flex: 1, 
-        alignItems: "center",
-        width:'100%',
+      //  alignItems: "center",
+        //width:'100%',
         backgroundColor: Theme.themeColor2
     },  
     item: {  
         padding: 10,
         fontSize: 18,  
     },  
+    profileImage:{
+        width:40,
+        height:40,
+        //marginRight:15
+    },
+    main:{
+        height:100,
+        marginVertical: 5,
+        marginHorizontal:8,
+        borderRadius:15,
+        backgroundColor:Theme.themeColor,
+    },
+    section:{
+        flex: 1,
+        flexDirection:'row',
+        marginBottom:35,
+        marginTop:15
+    },
+    firstPart:{
+        flex:1 ,
+        flexDirection:'row',
+        marginLeft:15
+    }
 })  
   
   
