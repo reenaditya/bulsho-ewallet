@@ -30,9 +30,7 @@ const PaymentRequestScreen = ({navigation}) => {
     useEffect(async () => {
 
         setUserData(JSON.parse(await AsyncStorage.getItem('user_info')));
-        setInterval(() => {
-          setSpining(false);
-        }, 2000);
+       
 
         const token = await AsyncStorage.getItem('token');
         let headers = {
@@ -45,6 +43,10 @@ const PaymentRequestScreen = ({navigation}) => {
         }).catch(err =>{
 
         })
+
+
+        setSpining(false);
+        
     },[])
   
     const renderSeparator = () => {  
@@ -157,10 +159,7 @@ const PaymentRequestScreen = ({navigation}) => {
                                 { userData.is_vendor?item.user.name:item.vendor.name}
                             </Text>
                             <Text style={{marginLeft:15,color:'#696969'}} >
-                                <Badge 
-                            value={<Text style={{color:'white',margin:5}}>{getStatus(item.status).text}</Text>} 
-                            badgeStyle={{height:30,backgroundColor: 'purple'}}
-                            />
+                               { userData.is_vendor?item.user.mobile_number:item.vendor.mobile_number}
                             </Text>
                         </View>
                         <View style={{textAlign:'right',marginRight:15}} >
@@ -168,12 +167,15 @@ const PaymentRequestScreen = ({navigation}) => {
                         </View>
                     </View>
                 </View>
-                <View style={{flex: 1,flexDirection:'row',marginLeft:18}}>
-                    <View style={{flex: 3}}>
+                <View style={{flex: 2,flexDirection:'row',marginLeft:18}}>
+                  <View style={{flex: 3,marginTop:8}}>
                         <Text style={{color:'grey',fontSize:12}}>{moment(item.created_at).format("DD MMM YYYY")}</Text>
                     </View>
-                    <View style={{flex: 2}}>
-                       
+                    <View style={{flex: 1}}>
+                        <Badge 
+                            value={<Text style={{color:'white',margin:5}}>{getStatus(item.status).text}</Text>} 
+                            badgeStyle={{height:30,backgroundColor: 'purple'}}
+                            />
                        
                     </View>
                  </View>
@@ -207,10 +209,8 @@ const PaymentRequestScreen = ({navigation}) => {
                                 { userData.is_vendor?item.user.name:item.vendor.name}
                             </Text>
                             <Text style={{marginLeft:15,color:'#696969'}} >
-                                <Badge 
-                            value={<Text style={{color:'white',margin:5}}>{getStatus(item.status).text}</Text>} 
-                            badgeStyle={{height:30,backgroundColor: 'purple'}}
-                            />
+                               { userData.is_vendor?item.user.mobile_number:item.vendor.mobile_number}
+                               
                             </Text>
                         </View>
                         <View style={{textAlign:'right',marginRight:15}} >
@@ -218,12 +218,15 @@ const PaymentRequestScreen = ({navigation}) => {
                         </View>
                     </View>
                 </View>
-                <View style={{flex: 1,flexDirection:'row',marginLeft:18}}>
-                    <View style={{flex: 3}}>
+                <View style={{flex: 2,flexDirection:'row',marginLeft:18}}>
+                    <View style={{flex: 3,marginTop:8}}>
                         <Text style={{color:'grey',fontSize:12}}>{moment(item.created_at).format("DD MMM YYYY")}</Text>
                     </View>
-                    <View style={{flex: 2}}>
-                       
+                    <View style={{flex: 1}}>
+                        <Badge 
+                            value={<Text style={{color:'white',margin:5}}>{getStatus(item.status).text}</Text>} 
+                            badgeStyle={{height:30,backgroundColor: 'purple'}}
+                            />
                        
                     </View>
                  </View>

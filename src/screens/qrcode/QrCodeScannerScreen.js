@@ -14,7 +14,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 
 const QrCodeScannerScreen = ({navigation}) => {
 
-    const [spining,setSpining] = useState(true);
+    const [spining,setSpining] = useState(false);
 
         useEffect(async () => {
 

@@ -10,7 +10,8 @@ import {
   TouchableOpacity,
   Keyboard,
   ScrollView,
-  ActivityIndicator
+  ActivityIndicator,
+  Alert
 } from "react-native";
 import styles from './style';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -19,6 +20,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { loginApi, userInfo } from '../../services/LoginService';
 import {logo} from '../../components/Icon';
 import Theme from '../../constant/Theme'
+import { useIsConnected } from 'react-native-offline';
  
 export default function Login({navigation}) {
     
@@ -31,6 +33,7 @@ export default function Login({navigation}) {
         icon: "eye-slash",
         password: true
     });
+    const isConnected = useIsConnected();
     const showPassword = () => {
         setState(prevState => ({
             icon:prevState.icon === 'eye' ? 'eye-slash' : 'eye',
@@ -54,45 +57,50 @@ export default function Login({navigation}) {
 
         setAnimating(true);
 
-        if (email && password) {
+        if (isConnected) {
 
-            await loginApi({email,password})
-            .then(async res => {
-                clearAndDismissKeyboard()
+            if (email && password) {
 
-                
-                await AsyncStorage.setItem('token', res.data.token);
+                await loginApi({email,password})
+                .then(async res => {
+                    clearAndDismissKeyboard()
 
-                let headers = {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${res.data.token}`
-                }
-                
-                await userInfo(headers).then(async res => {
-
-                    await AsyncStorage.setItem('user_info', JSON.stringify(res.data[0]));
-
-                    navigation.replace('DrawerNavigationRoutes');
                     
-                }).catch(err => {
-                    
-                    setErrorEmail('somthing went wrong')
+                    await AsyncStorage.setItem('token', res.data.token);
 
+                    let headers = {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${res.data.token}`
+                    }
+                    
+                    await userInfo(headers).then(async res => {
+
+                        await AsyncStorage.setItem('user_info', JSON.stringify(res.data[0]));
+
+                        navigation.replace('DrawerNavigationRoutes');
+                        
+                    }).catch(err => {
+                        
+                        setErrorEmail('somthing went wrong')
+
+                    })
+
+
+                    
+                })
+                .catch(err => {
+                    clearError()
+                    setErrorEmail(err.response.data[0].message)
                 })
 
+            }else{
 
+                email?setErrorEmail(''):setErrorEmail('Email / Mobile Number field is required')
+                password?setErrorPassword(''):setErrorPassword('Password field is required')
                 
-            })
-            .catch(err => {
-                clearError()
-                setErrorEmail(err.response.data[0].message)
-            })
-
+            }
         }else{
-
-            email?setErrorEmail(''):setErrorEmail('Email / Mobile Number field is required')
-            password?setErrorPassword(''):setErrorPassword('Password field is required')
-            
+            Alert.alert('You are offline')
         }
 
         setAnimating(false)

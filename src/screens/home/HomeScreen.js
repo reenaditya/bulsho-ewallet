@@ -112,7 +112,7 @@ const HomeScreen = (props) => {
       <View style={styles.headerSection}>
           <View style={styles.header}> 
               <View style={styles.subHeader}>
-                <ImageBackground source={Icon.profile} style={styles.profileImage} imageStyle={{ borderRadius: 20}}/>
+                <ImageBackground source={state && state.avatar?{uri:state.avatar}: Icon.profile} style={styles.profileImage} imageStyle={{ borderRadius: 20}}/>
                 <View>
                   <Text style={styles.greeting}>Welcome Back </Text>
                   <Text style={styles.userText}>{state?state.name:'Guest'}</Text>

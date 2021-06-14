@@ -4,12 +4,13 @@ import {
   SafeAreaView,
   Text,
   View,
-  Image,
+  ImageBackground,
   TextInput,
   Button,
   TouchableOpacity,
   ScrollView,
   Alert,
+  Platform,
   ActivityIndicator
 } from "react-native";
 import styles from './style';
@@ -20,6 +21,8 @@ import { emailExists } from '../../services/RegisterService';
 import * as ProfileService from '../../services/ProfileService';
 import Theme from '../../constant/Theme'
 import Spinner from 'react-native-loading-spinner-overlay';
+import ImagePicker from 'react-native-image-picker';
+import CIcon from '../../components/Icon';
 
 export default function ProfileScreen({navigation}){
 
@@ -30,14 +33,13 @@ export default function ProfileScreen({navigation}){
 	});
 	const [userData,setUserData] = useState({name:'',email:''});
 	const [spining,setSpining] = useState(true);
+	const [profile,setProfile] = useState("");
 	
   	useEffect(async () => {
-  		
-  		setInterval(() => {
-          setSpining(false);
-        }, 2000);
 
-		setUserData(JSON.parse(await AsyncStorage.getItem('user_info')));
+		await setUserData(JSON.parse(await AsyncStorage.getItem('user_info')));
+		 setSpining(false);
+
   	},[])
   	
   	const nextScreen = async () => {
@@ -53,18 +55,29 @@ export default function ProfileScreen({navigation}){
 			
 			const token = await AsyncStorage.getItem('token');
 
+			var formData = new FormData();
+				formData.append("name", userData.name);
+				formData.append("email", userData.email);
+				if (profile) {
+					formData.append("profile", {
+	    				name: profile.fileName,
+	    				type: profile.type,
+	    				uri: Platform.OS === "android" ? profile.uri : profile.uri.replace("file://", "")
+	  				});
+				}else{
+					formData.append("profile",profile);
+				}
+
         	let headers = {
             	'Content-Type': 'application/json',
-            	'Authorization': `Bearer ${token}`
+            	'Authorization': `Bearer ${token}`,
+            	//'Content-Type': 'multipart/form-data'
         	}
         	
   			await ProfileService.emailExists({email:userData.email},headers)
   			.then(async res => {
 				
-				await ProfileService.update({
-					name: userData.name,
-					email: userData.email,
-				},headers).then(async res => {
+				await ProfileService.update(formData,headers).then(async res => {
 					
 					await AsyncStorage.setItem('user_info',JSON.stringify(userData))
 
@@ -91,7 +104,7 @@ export default function ProfileScreen({navigation}){
   			})
   			.catch(err => {
 
-  				console.log(err.response)
+  				console.error(err)
   				errorMessage.email = err.response.data.message;
 				setError(errorMessage)
   			})
@@ -117,9 +130,21 @@ export default function ProfileScreen({navigation}){
   		setAnimating(false);
 
   	}
+  	const handleChoosePhoto = () => {
+    	const options = {
+      		noData: true,
+    	};
+    	ImagePicker.launchImageLibrary(options, (response) => {
+      		if (response.uri) {
+      			setProfile(response);
+      			setUserData({...userData,avatar:response.uri});
+      		}
+    	});
+  	};
 	
 	return (
 		<View style={styles.container}>
+		
 		{spining?(
             <Spinner
                 visible={spining}
@@ -136,7 +161,16 @@ export default function ProfileScreen({navigation}){
 			 	</View>
 			 	<View style={styles.subHeading}>
 			 		<Text style={styles.subHeadingText}> Update Your Profile </Text>
-					
+			 		<TouchableOpacity style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} onPress={handleChoosePhoto}>
+				       
+					    <ImageBackground 
+	                        source={userData.avatar?{ uri: userData.avatar } : CIcon.profile}
+	                        style={style.profileImage} 
+	                        imageStyle={{ borderRadius: 40}}/>
+				        
+				        <Text style={{marginBottom: 10}}>Choose Photo</Text>
+				        
+				    </TouchableOpacity>
 					<View style={[styles.inputView,error.name?{marginBottom:60}:{}]}>
 					    <Input
 					    label="Your Name"
@@ -198,3 +232,38 @@ export default function ProfileScreen({navigation}){
 		</View>
 	);
 }
+
+const style = StyleSheet.create({  
+    container: {  
+        flex: 1, 
+        backgroundColor: Theme.themeColor2
+    },  
+    item: {  
+        padding: 10,
+        fontSize: 18,  
+    },  
+    profileImage:{
+        width:80,
+        height:80,
+        marginBottom: 10
+        //marginRight:15
+    },
+    main:{
+        height:80,
+        //marginVertical: 5,
+        //marginHorizontal:8,
+        //borderRadius:15,
+        backgroundColor:Theme.themeColor,
+    },
+    section:{
+        flex: 1,
+        flexDirection:'row',
+        marginBottom:35,
+        marginTop:15
+    },
+    firstPart:{
+        flex:1 ,
+        flexDirection:'row',
+        marginLeft:15
+    }
+})  

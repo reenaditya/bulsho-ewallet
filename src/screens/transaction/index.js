@@ -28,10 +28,6 @@ const PaymentRequestScreen = ({navigation}) => {
     
     useEffect(async () => {
 
-        setInterval(() => {
-          setSpining(false);
-        }, 2000);
-
         const token = await AsyncStorage.getItem('token');
         const userInfo = await AsyncStorage.getItem('user_info');
         let headers = {
@@ -46,6 +42,7 @@ const PaymentRequestScreen = ({navigation}) => {
         }).catch(err =>{
 
         })
+        setSpining(false);
     },[])
   
     const renderSeparator = () => {  
@@ -112,6 +109,11 @@ const PaymentRequestScreen = ({navigation}) => {
                             </Text>
                             <Text style={{marginLeft:15,color:'#696969'}} >
                                 { userData.id === item.sender.id ? item.receiver.name : item.sender.name }
+                                
+                            </Text>
+                             <Text style={{marginLeft:15,color:'#696969'}} >
+                                
+                                { userData.id === item.sender.id ? item.receiver.mobile_number : item.sender.mobile_number }
                             </Text>
                         </View>
                         <View style={{textAlign:'right',marginRight:15}} >

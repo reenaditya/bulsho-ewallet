@@ -37,6 +37,12 @@ export default function SignUpSubmit ({navigation}){
         const password = await AsyncStorage.getItem('password');
         const mobileNumber = await AsyncStorage.getItem('mobileNumber');
 		
+		console.log({
+			email:email,
+			password:password,
+			mobile_number: mobileNumber,
+			is_vendor: isChecked ? 1 : 0
+		});
 		await registerApi({
 			email:email,
 			password:password,
@@ -73,7 +79,7 @@ export default function SignUpSubmit ({navigation}){
 
 			}
 		}).catch(err => {
-            	
+            	console.log(JSON.stringify(err.message) )
         })
 		
 		setAnimating(false);
@@ -100,7 +106,7 @@ export default function SignUpSubmit ({navigation}){
 		 			<Text style={{ fontSize:16,fontWeight:'bold'}}>By Tapping the Finish below, you agree to our Term & Condition</Text>
 		 		</View>
 
-		 		<TouchableOpacity style={{width:'80%',marginBottom:20}}>
+		 		{/*<TouchableOpacity style={{width:'80%',marginBottom:20}}>
       					<CheckBox
       					center
       					containerStyle={{backgroundColor:'white',borderRadius:0}}
@@ -110,7 +116,7 @@ export default function SignUpSubmit ({navigation}){
         				/>
       				<Text style={{color:'#232a34'}}> 
         			</Text>
-      			</TouchableOpacity>
+      			</TouchableOpacity>*/}
 		 		
 
 		 		

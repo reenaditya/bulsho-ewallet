@@ -30,11 +30,8 @@ const PaymentRequestScreen = ({navigation}) => {
     
     useEffect(async () => {
 
-        setInterval(() => {
-          setSpining(false);
-        }, 2000);
-
         await getDataFromServer();
+        setSpining(false);
        
     },[])
 
@@ -49,6 +46,7 @@ const PaymentRequestScreen = ({navigation}) => {
         await setUserData(JSON.parse(userInfo));
         await ProfileService.vendorList(headers)
         .then(res => {
+            console.log(res.data);
             setData(res.data)
             setFulldata(res.data)
         }).catch(err =>{
@@ -152,9 +150,9 @@ const PaymentRequestScreen = ({navigation}) => {
                             <Text style={{marginLeft:15,fontWeight:'bold',fontSize:15,lineHeight: 40}} >
                                { item.name }
                             </Text>
-                            {/*<Text style={{marginLeft:15,color:'#696969'}} >
-                                { userData.id === item.sender.id ? item.receiver.name : item.sender.name }
-                            </Text>*/}
+                            <Text style={{marginLeft:15,color:'#696969'}} >
+                                { item.mobile_number }
+                            </Text>
                         </View>
                        
                     </View>
@@ -199,6 +197,7 @@ const PaymentRequestScreen = ({navigation}) => {
               textStyle={{ color: '#000' }}
             />
           </View>
+          
             <FlatList  
                 data={data}  
                 keyExtractor={item => item.id}
@@ -229,6 +228,7 @@ const styles = StyleSheet.create({
     },
     main:{
         height:80,
+        //marginBottom:10,
         //marginVertical: 5,
         //marginHorizontal:8,
         //borderRadius:15,
