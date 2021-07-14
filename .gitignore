@@ -33,7 +33,7 @@ local.properties
 #
 node_modules/
 *.bzl
-ios/
+# ios/
 npm-debug.log
 yarn-error.log
 
@@ -58,4 +58,6 @@ buck-out/
 *.jsbundle
 
 # CocoaPods
-/ios/
+/ios/Pods
+/ios/Podfile.lock
+
